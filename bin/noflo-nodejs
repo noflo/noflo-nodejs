@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // vim: set filetype=javascript:
 var program = require('commander');
+var fs = require('fs');
 var http = require('http');
+var https = require('https');
 var lib = require('../index');
 var noflo = require('noflo');
 var runtime = require('noflo-runtime-websocket');
@@ -9,32 +11,45 @@ var flowhub = require('flowhub-registry');
 var querystring = require('querystring');
 var path = require('path');
 
-program
-  .version(lib.getLibraryConfig().version)
-    .option('--graph <graph>', 'Path to a graph file to start', null)
-    .parse(process.argv);
-
 var stored = lib.getStored();
 var baseDir = process.env.PROJECT_HOME || process.cwd();
 var interval = 10 * 60 * 1000;
+
+program
+  .version(lib.getLibraryConfig().version)
+    .option('--graph <graph>', 'Path to a graph file to start', null)
+    .option('--secure', 'use wss://', stored.secure)
+    .parse(process.argv);
 
 if (Object.keys(stored).length === 0) {
   console.error('No configuration found at ' + lib.getStoredPath() + '. Please run noflo-nodejs-init first.');
   process.exit(1);
 }
 
-var flowhubRuntime = new flowhub.Runtime({
+stored.secure = stored.secure || program.secure;
+
+var config = {
   label: stored.label,
   id: stored.id,
   user: stored.user,
   secret: stored.secret,
   protocol: 'websocket',
-  address: 'ws://' + stored.host + ':' + stored.port,
+  address: stored.secure ? 'wss://' : 'ws://' + stored.host + ':' + stored.port,
   type: 'noflo-nodejs'
-});
+};
+
+var flowhubRuntime = new flowhub.Runtime(config);
 
 var startServer = function(defaultGraph) {
-  var server = http.createServer(function () {});
+  var server;
+  if (stored.secure || program.secure) {
+    server = https.createServer({
+     key: fs.readFileSync('./ssl/key.pem'),
+     cert: fs.readFileSync('./ssl/cert.pem')
+    });
+  } else {
+    server = http.createServer(function () {});
+  }
   var rt = runtime(server, {
     defaultGraph: defaultGraph,
     baseDir: baseDir,
@@ -43,8 +58,7 @@ var startServer = function(defaultGraph) {
   });
 
   server.listen(stored.port, function () {
-    var address = 'ws://' + stored.host + ':' + stored.port;
-    console.log('NoFlo runtime listening at ' + address);
+    console.log('NoFlo runtime listening at ' + config.address);
     console.log('Using ' + baseDir + ' for component loading');
 
     var ide = stored.ide || 'http://app.flowhub.io';
