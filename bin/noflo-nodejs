@@ -43,14 +43,24 @@ function serve(req, res) {
   res.close();
 }
 
+function readSSLFile(fileName) {
+  var file = path.resolve(process.cwd(), fileName);
+  if (!fs.existsSync(file)) {
+    console.error('Could not find ' + fileName);
+    process.exit();
+  } else {
+    return fs.readFileSync(file);
+  }
+}
+
 var flowhubRuntime = new flowhub.Runtime(config);
 
 var startServer = function(defaultGraph) {
   var server;
   if (config.secure) {
     server = https.createServer({
-     key: fs.readFileSync(path.resolve(process.cwd(), 'ssl/key.pem')),
-     cert: fs.readFileSync(path.resolve(process.cwd(), 'ssl/cert.pem'))
+     key: readSSLFile('ssl/key.pem'),
+     cert: readSSLFile('ssl/cert.pem')
     }, serve);
   } else {
     server = http.createServer(serve);
