@@ -32,11 +32,11 @@ var config = {
   user: stored.user,
   secret: stored.secret,
   protocol: 'websocket',
-  address: stored.secure ? 'wss://' : 'ws://' + stored.host + ':' + stored.port,
   type: 'noflo-nodejs'
 };
 
 config.secure = stored.secure || program.secure;
+config.address = config.secure ? 'wss://' : 'ws://' + stored.host + ':' + stored.port;
 
 var flowhubRuntime = new flowhub.Runtime(config);
 
