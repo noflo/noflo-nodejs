@@ -26,8 +26,6 @@ if (Object.keys(stored).length === 0) {
   process.exit(1);
 }
 
-stored.secure = stored.secure || program.secure;
-
 var config = {
   label: stored.label,
   id: stored.id,
@@ -38,11 +36,13 @@ var config = {
   type: 'noflo-nodejs'
 };
 
+config.secure = stored.secure || program.secure;
+
 var flowhubRuntime = new flowhub.Runtime(config);
 
 var startServer = function(defaultGraph) {
   var server;
-  if (stored.secure || program.secure) {
+  if (config.secure) {
     server = https.createServer({
      key: fs.readFileSync(path.resolve(process.cwd(), '/ssl/key.pem')),
      cert: fs.readFileSync(path.resolve(process.cwd(), './ssl/cert.pem'))
