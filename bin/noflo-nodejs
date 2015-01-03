@@ -44,8 +44,8 @@ var startServer = function(defaultGraph) {
   var server;
   if (stored.secure || program.secure) {
     server = https.createServer({
-     key: fs.readFileSync('./ssl/key.pem'),
-     cert: fs.readFileSync('./ssl/cert.pem')
+     key: fs.readFileSync(process.cwd() + '/ssl/key.pem'),
+     cert: fs.readFileSync(process.cwd() + './ssl/cert.pem')
     });
   } else {
     server = http.createServer(function () {});
