@@ -44,8 +44,8 @@ var startServer = function(defaultGraph) {
   var server;
   if (stored.secure || program.secure) {
     server = https.createServer({
-     key: fs.readFileSync(process.cwd() + '/ssl/key.pem'),
-     cert: fs.readFileSync(process.cwd() + './ssl/cert.pem')
+     key: fs.readFileSync(path.resolve(process.cwd(), '/ssl/key.pem')),
+     cert: fs.readFileSync(path.resolve(process.cwd(), './ssl/cert.pem'))
     });
   } else {
     server = http.createServer(function () {});
@@ -62,8 +62,8 @@ var startServer = function(defaultGraph) {
     console.log('Using ' + baseDir + ' for component loading');
 
     var ide = stored.ide || 'http://app.flowhub.io';
-    var params = querystring.escape('protocol=websocket&address='+address);
-    console.log('Live IDE URL: ' + ide+'#runtime/endpoint?'+params);
+    var params = querystring.escape('protocol=websocket&address=' + config.address);
+    console.log('Live IDE URL: ' + ide + '#runtime/endpoint?' + params);
 
     // Register the runtime with Flowhub so that it will show up in the UI
     flowhubRuntime.register(function (err, ok) {
