@@ -75,9 +75,11 @@ mkdir ssl && cd ssl
 openssl genrsa -out key.pem
 openssl req -new -key key.pem -out csr.pem
 openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+cd ../
+
 ```
 
-You can switch between secure or not secure using the `--secure` or `--no-secure` command line options.
+You can switch to secure using the `--secure` command line option.
 
 If you are testing ssl locally make sure you first accept the certificate in the browser,
 otherwise the handshake will fail silently.
