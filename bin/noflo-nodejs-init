@@ -16,6 +16,7 @@ program
   .option('--label <label>', 'Human-readable label for the runtime.', stored.label)
   .option('--secret <secret>', 'Secret string to be used for the connection.', stored.secret)
   .option('--id <uuid>', 'Unique Identifier for the runtime instance.', stored.id)
+  .option('--secure', 'Use secure connection.', stored.secure)
   .parse(process.argv);
 
 if (program.user && !defaults.user) {
@@ -31,7 +32,8 @@ var values = {
   host: program.host,
   port: program.port,
   label: program.label,
-  secret: program.secret
+  secret: program.secret,
+  secure: program.secure
 };
 
 lib.saveStored(values);
