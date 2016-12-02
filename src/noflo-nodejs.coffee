@@ -154,18 +154,24 @@ startServer = (program, defaultGraph) ->
         process.exit 1
 
     if program.batch and program.graph
-      network.on 'end', (event) ->
-        onDone = () ->
-          process.exit 0
-        cleanup = () ->
-          server.close onDone
-          setTimeout onDone, 2000 # workaround for node.js 0.12 where on open connections does not fire
+      onDone = () ->
+        process.exit 0
+      cleanup = () ->
+        server.close onDone
+        setTimeout onDone, 2000 # workaround for node.js 0.12 where on open connections does not fire
+      maybeDump = ->
         if program.trace
           tracer.dumpFile null, (err, fname) ->
             console.log 'Wrote flowtrace to:', fname
             cleanup()
         else
           cleanup()
+
+      network.on 'end', (event) ->
+        maybeDump()
+      process.on 'SIGINT', ->
+        # TODO: should we call network shutdown instead?
+        maybeDump()
 
   server.listen stored.port, ->
     address = 'ws://' + stored.host + ':' + stored.port
