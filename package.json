@@ -34,7 +34,7 @@
     "coffee-script": "^1.12.7",
     "eslint": "^4.19.0",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-import": "2.11.0",
     "fbp-protocol": "^0.9.1",
     "grunt": "^1.0.1",
     "grunt-exec": "^3.0.0",
