@@ -15,6 +15,9 @@ exports.main = () => {
         if (options.batch) {
           return;
         }
+        if (options.id) {
+          process.title = `noflo-nodejs-${options.id}`;
+        }
         setTimeout(() => {
           console.log(`NoFlo runtime is now listening at ${server.getUrl(options)}`);
           if (options.secret) {
