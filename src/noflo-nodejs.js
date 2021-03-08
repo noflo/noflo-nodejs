@@ -16,6 +16,9 @@ exports.main = () => {
         if (options.batch) {
           return;
         }
+        if (options.id) {
+          process.title = `noflo-nodejs-${options.id}`;
+        }
         setTimeout(() => {
           if (options.protocol === 'webrtc') {
             console.log(`NoFlo runtime is now listening at WebRTC channel #${options.id}`);
