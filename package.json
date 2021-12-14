@@ -30,7 +30,7 @@
     "noflo-runtime-websocket": "^0.13.0",
     "open": "^8.0.1",
     "password-generator": "^2.2.0",
-    "slug": "^4.0.2",
+    "slug": "^5.1.1",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
